@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 //JPARepository needs the datatype of its table, that will be manipulated, and its id type
-@Repository(value = "users")
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByDocument(String document);
     Optional<User> findUserById(Long id);
