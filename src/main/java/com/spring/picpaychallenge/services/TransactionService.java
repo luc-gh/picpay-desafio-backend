@@ -55,6 +55,9 @@ public class TransactionService {
         this.repository.save(transaction);
         userService.saveNewUser(sender);
         userService.saveNewUser(receiver);
+
+        //Notificações
+        NotificationService.sendNotification(receiver, "Enviado");
     }
 
     private boolean authorizeTransaction(User sender, BigDecimal value){
