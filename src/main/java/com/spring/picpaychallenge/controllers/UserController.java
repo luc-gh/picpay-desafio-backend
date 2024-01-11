@@ -6,19 +6,18 @@ import com.spring.picpaychallenge.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/users")
+@RestController
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
     @PostMapping  //Endpoint de criação de usuários
-    public ResponseEntity<User> createUser(UserDTO userData){
+    public ResponseEntity<User> createUser(@RequestBody UserDTO userData){  //RequestBody indica que esses são os dados da req
         User user = userService.saveNewUser(userData);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
