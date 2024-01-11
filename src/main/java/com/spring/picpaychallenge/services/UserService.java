@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,10 +16,10 @@ public class UserService {
     private UserRepository repository;
 
     public void validateTransaction(User sender, BigDecimal amount) throws Exception {
-        if (sender.getUserType().equals(UserType.MERCHANT)) {
+        if (sender.getUserType() == UserType.MERCHANT) {
             throw new Exception("Transferência inválida. Tipo de usuário não autorizado.");
         }
-        if (sender.getBalance().longValueExact() < amount.longValueExact()){
+        if(sender.getBalance().compareTo(amount) < 0){
             throw new Exception("Transferência não realizada. Usuário não tem saldo para tal.");
         }
         System.out.println("Transação válida.");

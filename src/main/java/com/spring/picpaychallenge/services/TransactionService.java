@@ -5,6 +5,7 @@ import com.spring.picpaychallenge.entities.Transaction;
 import com.spring.picpaychallenge.entities.User;
 import com.spring.picpaychallenge.repositories.TransactionRepository;
 import lombok.Getter;
+import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,11 @@ public class TransactionService {
     @Autowired
     private TransactionRepository repository;
 
+    @Autowired
     private RestTemplate restTemplate;  //Para requisições HTTP
+
+    @Autowired
+    private NotificationService notificationService;
 
     private static final String mock = "https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc";
 
@@ -36,7 +41,7 @@ public class TransactionService {
 
         userService.validateTransaction(sender, dto.value());
 
-        if (!this.authorizeTransaction(sender, dto.value())) throw new Exception("Transação não autorizada.");
+        if (!this.authorizeTransaction(sender, dto.value())) throw new TransactionException("Transação não autorizada.");
 
         //Gerando nova transação
         Transaction transaction = new Transaction();
@@ -57,13 +62,17 @@ public class TransactionService {
         userService.saveNewUser(receiver);
 
         //Notificações
-        NotificationService.sendNotification(receiver, "Enviado");
+        this.notificationService.sendNotification(sender, "Transferência realizada com sucesso!");
+        this.notificationService.sendNotification(receiver, "Valor recebido com sucesso!");
 
         return transaction;
     }
 
     private boolean authorizeTransaction(User sender, BigDecimal value){
         ResponseEntity<Map> response = this.restTemplate.getForEntity(mock, Map.class);
-        return response.getStatusCode().equals(HttpStatus.OK) && Objects.requireNonNull(response.getBody()).get("message").equals("Autorizado");
+        if (response.getStatusCode() == HttpStatus.OK){
+            String message = (String) response.getBody().get("message");
+            return "Autorizado".equalsIgnoreCase(message);
+        } else return false;
     }
 }
