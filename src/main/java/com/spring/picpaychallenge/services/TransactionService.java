@@ -30,7 +30,7 @@ public class TransactionService {
     private static final String mock = "https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc";
 
     //A função a seguir recebe o objeto que guarda os dados do payload (JSON) a partir de uma requisição POST
-    public void createTransaction(TransactionDTO dto) throws Exception{
+    public Transaction createTransaction(TransactionDTO dto) throws Exception {
         User sender = this.userService.findUserById(dto.senderId());
         User receiver = this.userService.findUserById(dto.receiverId());
 
@@ -58,6 +58,8 @@ public class TransactionService {
 
         //Notificações
         NotificationService.sendNotification(receiver, "Enviado");
+
+        return transaction;
     }
 
     private boolean authorizeTransaction(User sender, BigDecimal value){

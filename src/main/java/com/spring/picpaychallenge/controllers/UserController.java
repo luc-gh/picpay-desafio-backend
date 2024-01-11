@@ -17,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping  //Endpoint de criação de usuários
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userData){  //RequestBody indica que esses são os dados da req
+    public ResponseEntity<User> createUser(@RequestBody UserDTO userData){  //RequestBody indica que esses são os dados da request
         User user = userService.saveNewUser(userData);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
