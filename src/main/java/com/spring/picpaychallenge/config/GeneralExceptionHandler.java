@@ -33,7 +33,7 @@ public class GeneralExceptionHandler {
     //Exceções gerais
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDTO> generalExceptionHandler(Exception e){
-        ExceptionDTO exceptionDTO = new ExceptionDTO(e.getMessage(), 500);
+        ExceptionDTO exceptionDTO = new ExceptionDTO(e.getCause().getMessage(), 500);
         return ResponseEntity.internalServerError().body(exceptionDTO);
     }
 }
