@@ -1,4 +1,4 @@
 package com.spring.picpaychallenge.dto;
 
-public record ExceptionDTO(String message, Integer statusCode) {
+public record ExceptionDTO(String message, Integer statusCode, String cause) {
 }

@@ -4,6 +4,8 @@ import com.spring.picpaychallenge.dto.UserDTO;
 import com.spring.picpaychallenge.entities.User;
 import com.spring.picpaychallenge.repositories.UserRepository;
 import com.spring.picpaychallenge.resources.UserType;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +19,16 @@ public class UserService {
 
     public void validateTransaction(User sender, BigDecimal amount) throws Exception {
         if (sender.getUserType() == UserType.MERCHANT) {
-            throw new Exception("Transferência inválida. Tipo de usuário não autorizado.");
+            throw new IllegalArgumentException("Transferência inválida. Lojistas não podem enviar dinheiro.");
         }
         if(sender.getBalance().compareTo(amount) < 0){
-            throw new Exception("Transferência não realizada. Usuário não tem saldo para tal.");
+            throw new Exception("Transferência não realizada. O remetente não tem saldo suficiente para realizar a operação.");
         }
         System.out.println("Transação válida.");
     }
 
     public User findUserById(Long id) throws Exception {
-        return this.repository.findUserById(id).orElseThrow(() -> new Exception("Usuário não encontrado."));
+        return this.repository.findUserById(id).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
     }
 
     public void saveNewUser(User user){
